@@ -1,0 +1,122 @@
+<!doctype>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Mon magasin en ligne 100% bons plans</title>
+  <!-- Load Vue followed by Vue Router -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/http-vue-loader/src/httpVueLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-router/dist/vue-router.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script type="text/javascript" src="script.js"></script>
+  <script src="https://kit.fontawesome.com/5804e4d8f3.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <button onclick="topFunction()" id="top-button" title="back-to-top"><i class="fa fa-angle-up"></i></button>
+  <div id="app">
+
+    <header>
+      <h1>Chez Victor et Victorine</h1>
+      <nav id="block-nav-deco">
+        <router-link to='/' id="nav-deco">Accueil</router-link>
+        <router-link to='/panier' id="nav-deco">Panier</router-link>
+      </nav>
+    </header>
+    <main>
+      <router-view :articles="articles" :panier="panier" @add-article="addArticle" @put-in-panier="putInPanier"
+        @remove-from-panier="removeFromPanier" @add-to-panier="addToPanier" @delete-article="deleteArticle"
+        @update-article="updateArticle"></router-view>
+    </main>
+  </div>
+
+  <script src="/vue-application.js"></script>
+</body>
+
+<style>
+  html {
+    scroll-behavior: smooth;
+}
+  body {
+    background-image: url(img/Boutique.jpg);
+    background-repeat: no-repeat;
+    background-position:  center;
+
+    background-size: cover;
+  }
+
+  #app{
+    width: 1100px;
+    background-color: rgb(245, 245, 220,0.5);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 50px;
+    
+
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+    color: black;
+
+    text-decoration: underline;
+    text-transform: uppercase;
+  }
+
+  #nav-deco {
+    display: block;
+    text-align: center;
+    cursor: pointer;
+    color: black;
+
+
+    text-transform: uppercase;
+    text-decoration: none;
+    margin: 10px;
+  }
+
+  #nav-deco:hover {
+    text-decoration: underline;
+  }
+
+  #block-nav-deco {
+    display: flex;
+    justify-content: center;
+
+  }
+
+
+  /*//////// UP BTN ////// */
+
+  #top-button {
+    border: none;
+    outline: none;
+    background-color: #5a5a5abb;
+    opacity: 0.8;
+    color: #fff;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    bottom: 30px;
+    position: fixed;
+    right: 30px;
+    z-index: 9;
+    transition: all 0.5s;
+  }
+
+  #top-button:hover {
+    color: #5a5a5abb;
+    background-color: #fff;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #5a5a5abb;
+    transition: all 0.7s;
+  }
+</style>
+
+</html>
