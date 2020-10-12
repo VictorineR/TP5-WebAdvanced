@@ -30,6 +30,7 @@
         </button>
       </div>
     </article>
+    <button>Payer</button>
   </div>
 </template>
 
@@ -54,7 +55,7 @@ module.exports = {
 </script>
 
 <style scoped>
-#all{
+#all {
   padding-left: 1%;
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
@@ -65,7 +66,7 @@ h2 {
   text-transform: uppercase;
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
-   color:black,
+  color: black;
 }
 
 .article-img {
@@ -79,7 +80,6 @@ h2 {
   height: 160px;
   background-size: cover;
 }
-
 
 button {
   border: none;

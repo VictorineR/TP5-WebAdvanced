@@ -75,10 +75,17 @@ var app = new Vue({
       await axios.post('/api/register', test)
     },
 
-    async loginUser (userEmail, userPassword) {
+    async loginUser (userEmail, userPassword) { 
       const test = {email: userEmail, password: userPassword}
       await axios.post('/api/login', test)
     },
+
+    async getUserId(){
+      
+      const res = await axios.get('/api/me')
+      return res.data
+        
+    }
 
 
   }

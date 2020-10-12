@@ -328,8 +328,14 @@ router.post('/login', async(req, res) => {
   }
 })
 
-router.get('/me', (req, res) => {
-  res.json(req.session.userId)
+router.get('/me', async(req, res) => {
+  
+  if(req.session.userId !== undefined){
+    res.json(req.session.userId)
+  }
+  else{
+    res.status(401).json({message: 'bad request: you are not connected'})
+  }
 })
 
 module.exports = router

@@ -9,8 +9,10 @@
         <input type="submit" value="Login" @click="loginUser(userEmail, userPassword)">
       </div>
 
+
       user: {{userEmail}} mdp: {{userPassword}}
   </div>
+
 </template>
 
 <script>
@@ -31,6 +33,9 @@ module.exports = {
       loginUser(userEmail, userPassword) {
       this.$emit("login-user", userEmail, userPassword);
     },
+    getUserI(userId){
+        this.$emit("get-user-id", userEmail, userPassword);
+    }
   },
 };
 </script>
