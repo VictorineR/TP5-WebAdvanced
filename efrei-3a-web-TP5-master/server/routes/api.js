@@ -2,8 +2,19 @@ const express = require('express')
 const router = express.Router()
 const articles = require('../data/articles.js')
 
+const bcrypt = require('bcrypt')
+const { Client } = require('pg')
+const client = new Client({
+  user: 'postgres',
+  host: 'localhost',
+  password: 'V9rw8y6nhatkhoi/',
+  database: 'TP5'
+})
+
+client.connect()
+
 class Panier {
-  constructor () {
+  constructor() {
     this.createdAt = new Date()
     this.updatedAt = new Date()
     this.articles = []
@@ -41,25 +52,27 @@ router.get('/panier', (req, res) => {
  * Cette route doit ajouter un article au panier, puis retourner le panier modifié à l'utilisateur
  * Le body doit contenir l'id de l'article, ainsi que la quantité voulue
  */
+
+
 router.post('/panier', (req, res) => {
-  const id = parseInt(req.body.id) 
+  const id = parseInt(req.body.id)
   const quantity = parseInt(req.body.quantity)
-  
-  if (isNaN(id) || id>articles.length || 
-    isNaN(quantity) || quantity <= 0){
-    
-    res.status(400).json({ message:'bad request'})
+
+  if (isNaN(id) || id > articles.length ||
+    isNaN(quantity) || quantity <= 0) {
+
+    res.status(400).json({ message: 'bad request' })
     return
   }
-  
-  for (var i= 0; i < req.session.panier.articles.length; i++){
-    if (req.session.panier.articles[i].id == id){
-      res.status(400).json ({ message: 'bad resquest'})
+
+  for (var i = 0; i < req.session.panier.articles.length; i++) {
+    if (req.session.panier.articles[i].id == id) {
+      res.status(400).json({ message: 'bad resquest' })
     }
   }
 
   const article = {
-    id: id, 
+    id: id,
     quantity: quantity
   }
 
@@ -73,16 +86,16 @@ router.post('/panier/pay', (req, res) => {
   const prenom = req.body.prenom // on recupere le name
   const nom = req.body.nom // we recup the lastname
 
-  if(prenom ==''  || nom ==''){
-    res.status(400).json({message:'bad request'})
+  if (prenom == '' || nom == '') {
+    res.status(400).json({ message: 'bad request' })
     return
   }
 
-  res.send("Merci " + prenom +" "+ nom + " pour votre achat")
+  res.send("Merci " + prenom + " " + nom + " pour votre achat")
 
   req.session.destroy()
   res.json(res.session.panier.articles)
-  
+
 })
 
 
@@ -95,24 +108,25 @@ router.put('/panier/:articleId', (req, res) => {
   const quantity = parseInt(req.body.quantity) // we recup the quantity value
   var i = 0
 
-  if(isNaN(id) || (id > articles.length || quantity <= 0)){
-    res.status(400).json({message:'bad request'})
-    return}
+  if (isNaN(id) || (id > articles.length || quantity <= 0)) {
+    res.status(400).json({ message: 'bad request' })
+    return
+  }
 
-    while(i < req.session.panier.articles.length && req.session.panier.articles[i].id != id){
-      i++;
-    }
+  while (i < req.session.panier.articles.length && req.session.panier.articles[i].id != id) {
+    i++;
+  }
 
-    if(req.session.panier.articles[i].id != id){
-      res.status(400).json({message: 'bad request'}) // if the id of the article is not found into the articles arrays
-      return
-    }
+  if (req.session.panier.articles[i].id != id) {
+    res.status(400).json({ message: 'bad request' }) // if the id of the article is not found into the articles arrays
+    return
+  }
 
-    req.session.panier.articles[i].quantity = quantity // we change the value quantity
-    
-    res.json(req.session.panier) // we return the basket
+  req.session.panier.articles[i].quantity = quantity // we change the value quantity
 
- 
+  res.json(req.session.panier) // we return the basket
+
+
 })
 
 /*
@@ -123,20 +137,20 @@ router.delete('/panier/:articleId', (req, res) => {
   const id = parseInt(req.params.articleId) // we recup the article id 
   var i = 0
 
-  if(isNaN(id) || (id > articles.length)){
-    res.status(400).json({message:'bad request'})
+  if (isNaN(id) || (id > articles.length)) {
+    res.status(400).json({ message: 'bad request' })
     return
   } // we test if not number or not in the articles arrays, there is an error 
 
-  while(i < req.session.panier.articles.length && req.session.panier.articles[i].id != id){
+  while (i < req.session.panier.articles.length && req.session.panier.articles[i].id != id) {
     i++;
   }
-  if(req.session.panier.articles[i].id != id){
-    res.status(400).json({message: 'bad request'}) // if the id of the article is not found into the articles arrays
+  if (req.session.panier.articles[i].id != id) {
+    res.status(400).json({ message: 'bad request' }) // if the id of the article is not found into the articles arrays
     return
   }
 
-  req.session.panier.articles.splice(i,1) // we remove the wanted article from the basket
+  req.session.panier.articles.splice(i, 1) // we remove the wanted article from the basket
 
   res.json(req.session.panier) // we return the modified array 
 })
@@ -163,9 +177,9 @@ router.post('/article', (req, res) => {
 
   // vérification de la validité des données d'entrée
   if (typeof name !== 'string' || name === '' ||
-      typeof description !== 'string' || description === '' ||
-      typeof image !== 'string' || image === '' ||
-      isNaN(price) || price <= 0) {
+    typeof description !== 'string' || description === '' ||
+    typeof image !== 'string' || image === '' ||
+    isNaN(price) || price <= 0) {
     res.status(400).json({ message: 'bad request' })
     return
   }
@@ -191,7 +205,7 @@ router.post('/article', (req, res) => {
  * Comme ces trois routes ont un comportement similaire, on regroupe leurs fonctionnalités communes dans un middleware
  */
 
-function parseArticle (req, res, next) {
+function parseArticle(req, res, next) {
   const articleId = parseInt(req.params.articleId)
 
   // si articleId n'est pas un nombre (NaN = Not A Number), alors on s'arrête
@@ -247,5 +261,35 @@ router.route('/article/:articleId')
     articles.splice(index, 1) // remove the article from the array
     res.send()
   })
+
+router.post('/register', async (req, res) => {
+  const email = req.body.email
+  const password = req.body.password
+
+  const sql = "SELECT * FROM users WHERE email=$1"
+  const result = await client.query({
+    text: sql,
+    values: [email] // ici name et description ne sont pas concaténées à notre requête
+  })  
+  for(mail in result.rows){
+    if(mail.email === email){
+      console.log("Test")
+      res.status(400).json({ message : 'bad request'})
+      return
+    }
+  }
+
+  const hash = await bcrypt.hash(password, 10)
+
+  const sql1 = "INSERT INTO users (email, password) VALUES ($1, $2)"
+  await client.query({
+    text: sql1,
+    values: [email, hash]
+  })
+
+  console.log(result)
+  res.json({message: "You are registered"})
+
+})
 
 module.exports = router

@@ -1,9 +1,10 @@
 const Home = window.httpVueLoader('./components/Home.vue')
 const Panier = window.httpVueLoader('./components/Panier.vue')
-
+const Register = window.httpVueLoader('./components/Register.vue')
 const routes = [
   { path: '/', component: Home },
   { path: '/panier', component: Panier }, 
+  { path: '/register', component: Register }, 
 ]
 
 const router = new VueRouter({
@@ -64,6 +65,11 @@ var app = new Vue({
       const test = {id: articleId, quantity: articleQuantity}
       const res = await axios.put('/api/panier/'+ articleId, test)
       this.panier = res.data
+    },
+
+    async registerUser (userEmail, userPassword) {
+      const test = {email: userEmail, password: userPassword}
+      const res = await axios.post('/api/register', test)
     },
   }
 })
