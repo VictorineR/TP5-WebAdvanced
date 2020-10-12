@@ -7,7 +7,7 @@ const { Client } = require('pg')
 const client = new Client({
   user: 'postgres',
   host: 'localhost',
-  password: 'V9rw8y6nhatkhoi/',
+  password: 'postgrespwd',
   database: 'TP5'
 })
 
@@ -299,7 +299,7 @@ router.post('/login', async(req, res) => {
 
   if(req.session.userId === undefined){
     console.log(req.session.userId)
-    const sql = "SELECT email, password FROM users"
+    const sql = "SELECT email, password, id FROM users"
     const result = await client.query({
       text: sql,
     })
@@ -326,6 +326,10 @@ router.post('/login', async(req, res) => {
     res.status(400).json({message: 'bad request' })
       return
   }
+})
+
+router.get('/me', (req, res) => {
+  res.json(req.session.userId)
 })
 
 module.exports = router
