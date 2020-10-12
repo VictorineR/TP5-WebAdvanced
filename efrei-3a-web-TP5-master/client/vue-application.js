@@ -69,7 +69,7 @@ var app = new Vue({
 
     async registerUser (userEmail, userPassword) {
       const test = {email: userEmail, password: userPassword}
-      const res = await axios.post('/api/register', test)
+      await axios.post('/api/register', test)
     },
   }
 })

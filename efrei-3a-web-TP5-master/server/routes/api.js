@@ -266,12 +266,12 @@ router.post('/register', async (req, res) => {
   const email = req.body.email
   const password = req.body.password
 
-  const sql = "SELECT * FROM users WHERE email=$1"
+  const sql = "SELECT email FROM users"
   const result = await client.query({
     text: sql,
-    values: [email] // ici name et description ne sont pas concaténées à notre requête
-  })  
-  for(mail in result.rows){
+  })
+
+  for(mail of result.rows){
     if(mail.email === email){
       console.log("Test")
       res.status(400).json({ message : 'bad request'})
@@ -288,8 +288,44 @@ router.post('/register', async (req, res) => {
   })
 
   console.log(result)
+
   res.json({message: "You are registered"})
 
+})
+
+router.post('/login', async(req, res) => {
+  const email = req.body.email
+  const password = req.body.password
+
+  if(req.session.userId === undefined){
+    console.log(req.session.userId)
+    const sql = "SELECT email, password FROM users"
+    const result = await client.query({
+      text: sql,
+    })
+
+    var findUser = result.rows.find(a => a.email === email) 
+    if(findUser !== undefined){
+      console.log(await bcrypt.compare(password, findUser.password))
+      if(await bcrypt.compare(password, findUser.password)){
+        req.session.userId = findUser.id
+        console.log(req.session.userId)
+      }
+      else{
+        res.status(400).json({message: 'bad request' })
+        return
+      }
+    }
+    else{
+      res.status(400).json({message: 'bad request' })
+      return
+    }
+    res.json({message: "You're logged successfully !"})
+  }
+  else{
+    res.status(400).json({message: 'bad request' })
+      return
+  }
 })
 
 module.exports = router

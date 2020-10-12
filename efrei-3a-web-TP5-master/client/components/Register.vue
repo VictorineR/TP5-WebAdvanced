@@ -6,7 +6,7 @@
         </div>
         <input type="text" name="mail" placeholder="Email" v-model="userEmail" required>
         <input type="password" name="password" placeholder="Password" v-model="userPassword" required>
-        <input type="submit" value="Login" @click="registerUser(userEmail, userPassword)>
+        <input type="submit" value="Register" aler @click="registerUser(userEmail, userPassword)">
       </div>
       user: {{userEmail}} mdp: {{userPassword}}
   </div>
@@ -24,7 +24,8 @@ module.exports = {
         userPassword: "",
     };
   },
-  async mounted() {},
+  async mounted() {
+  },
   methods: {
       registerUser(userEmail, userPassword) {
       this.$emit("register-user", userEmail, userPassword);
